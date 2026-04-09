@@ -93,7 +93,7 @@ class TestMockedSearchTools:
 
         async with client:
             result = await client.call_tool(
-                "search_opinions", {"q": "miranda", "court": "scotus", "limit": 5}
+                "search_opinions", {"q": "miranda", "court": "scotus"}
             )
 
             assert not result.is_error
@@ -112,7 +112,7 @@ class TestMockedSearchTools:
 
         async with client:
             result = await client.call_tool(
-                "search_dockets", {"q": "patent", "limit": 10}
+                "search_dockets", {"q": "patent"}
             )
 
             assert not result.is_error
@@ -131,7 +131,7 @@ class TestMockedSearchTools:
 
         async with client:
             result = await client.call_tool(
-                "search_opinions", {"q": "xyznonexistent123", "limit": 5}
+                "search_opinions", {"q": "xyznonexistent123"}
             )
 
             assert not result.is_error
@@ -417,7 +417,6 @@ class TestSearchFilters:
                     "cited_gt": 10,
                     "cited_lt": 1000,
                     "order_by": "dateFiled desc",
-                    "limit": 25,
                 },
             )
 
@@ -445,7 +444,7 @@ class TestSearchFilters:
         async with client:
             result = await client.call_tool(
                 "search_recap_documents",
-                {"q": "motion to dismiss", "court": "dcd", "limit": 10},
+                {"q": "motion to dismiss", "court": "dcd"},
             )
 
             assert not result.is_error
@@ -474,7 +473,7 @@ class TestSearchFilters:
         async with client:
             result = await client.call_tool(
                 "search_audio",
-                {"q": "oral argument", "court": "scotus", "limit": 5},
+                {"q": "oral argument", "court": "scotus"},
             )
 
             assert not result.is_error
@@ -501,7 +500,7 @@ class TestSearchFilters:
         async with client:
             result = await client.call_tool(
                 "search_people",
-                {"q": "Roberts", "position_type": "jud", "limit": 5},
+                {"q": "Roberts", "position_type": "jud"},
             )
 
             assert not result.is_error

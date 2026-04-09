@@ -122,7 +122,7 @@ async def test_search_opinions_tool(client: Client[Any]) -> None:
     async with client:
         # Search for Supreme Court opinions
         result = await client.call_tool(
-            "search_opinions", {"q": "miranda", "court": "scotus", "limit": 5}
+            "search_opinions", {"q": "miranda", "court": "scotus"}
         )
 
         assert not result.is_error
@@ -136,8 +136,7 @@ async def test_search_opinions_tool(client: Client[Any]) -> None:
         # Check we got results
         if data["count"] > 0:
             assert len(data["results"]) > 0
-            # API might not respect exact limit, so be flexible
-            assert len(data["results"]) <= 20  # Should not exceed default page size
+            assert len(data["results"]) <= 20  # API returns fixed page size of 20
 
             # Verify result structure
             first_result = data["results"][0]
@@ -187,7 +186,6 @@ async def test_search_with_date_filters(client: Client[Any]) -> None:
                 "q": "constitutional",
                 "filed_after": "2023-01-01",
                 "filed_before": "2023-12-31",
-                "limit": 10,
             },
         )
 
@@ -265,7 +263,7 @@ async def test_search_people_tool(client: Client[Any]) -> None:
     """
     async with client:
         result = await client.call_tool(
-            "search_people", {"q": "Roberts", "position_type": "jud", "limit": 5}
+            "search_people", {"q": "Roberts", "position_type": "jud"}
         )
 
         assert not result.is_error
@@ -303,8 +301,8 @@ async def test_concurrent_requests(client: Client[Any]) -> None:
         # Make multiple concurrent requests
         tasks = [
             client.call_tool("status", {}),
-            client.call_tool("search_opinions", {"q": "first amendment", "limit": 5}),
-            client.call_tool("search_dockets", {"q": "patent", "limit": 5}),
+            client.call_tool("search_opinions", {"q": "first amendment"}),
+            client.call_tool("search_dockets", {"q": "patent"}),
         ]
 
         results = await asyncio.gather(*tasks)

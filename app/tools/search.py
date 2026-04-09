@@ -26,7 +26,6 @@ async def _search_courtlistener(
     search_type: str,
     q: str,
     order_by: str,
-    limit: int,
     filters: dict[str, Any],
 ) -> dict[str, Any]:
     """Execute a search against the CourtListener API.
@@ -37,7 +36,6 @@ async def _search_courtlistener(
         search_type: The CourtListener V4 API type parameter (e.g., 'o', 'd', 'p').
         q: The search query string.
         order_by: Sort order for results.
-        limit: Maximum number of results to return.
         filters: Dictionary of optional filter parameters.
 
     Returns:
@@ -57,10 +55,6 @@ async def _search_courtlistener(
         "order_by": order_by,
         "type": search_type,
     }
-
-    # Add limit (V4 uses 'page_size' for pagination)
-    if limit:
-        params["page_size"] = limit
 
     # Add optional filters (only non-empty/non-zero values)
     for key, value in filters.items():
@@ -113,9 +107,6 @@ async def opinions(
         str,
         Field(description="Sort by 'score desc', 'dateFiled desc', or 'dateFiled asc'"),
     ] = "score desc",
-    limit: Annotated[
-        int, Field(description="Maximum results to return", ge=1, le=100)
-    ] = 20,
 ) -> dict[str, Any]:
     """Search case law opinion clusters with nested Opinion documents in CourtListener."""
     return await _search_courtlistener(
@@ -124,7 +115,6 @@ async def opinions(
         search_type="o",
         q=q,
         order_by=order_by,
-        limit=limit,
         filters={
             "court": court,
             "case_name": case_name,
@@ -159,9 +149,6 @@ async def dockets(
         str,
         Field(description="Sort by 'score desc', 'dateFiled desc', or 'dateFiled asc'"),
     ] = "score desc",
-    limit: Annotated[
-        int, Field(description="Maximum results to return", ge=1, le=100)
-    ] = 20,
 ) -> dict[str, Any]:
     """Search federal cases (dockets) from PACER in CourtListener."""
     return await _search_courtlistener(
@@ -170,7 +157,6 @@ async def dockets(
         search_type="d",
         q=q,
         order_by=order_by,
-        limit=limit,
         filters={
             "court": court,
             "case_name": case_name,
@@ -204,9 +190,6 @@ async def dockets_with_documents(
         str,
         Field(description="Sort by 'score desc', 'dateFiled desc', or 'dateFiled asc'"),
     ] = "score desc",
-    limit: Annotated[
-        int, Field(description="Maximum results to return", ge=1, le=100)
-    ] = 20,
 ) -> dict[str, Any]:
     """Search federal cases (dockets) with up to three nested documents.
 
@@ -218,7 +201,6 @@ async def dockets_with_documents(
         search_type="r",
         q=q,
         order_by=order_by,
-        limit=limit,
         filters={
             "court": court,
             "case_name": case_name,
@@ -258,9 +240,6 @@ async def recap_documents(
         str,
         Field(description="Sort by 'score desc', 'dateFiled desc', or 'dateFiled asc'"),
     ] = "score desc",
-    limit: Annotated[
-        int, Field(description="Maximum results to return", ge=1, le=100)
-    ] = 20,
 ) -> dict[str, Any]:
     """Search federal filing documents from PACER in the RECAP archive."""
     return await _search_courtlistener(
@@ -269,7 +248,6 @@ async def recap_documents(
         search_type="rd",
         q=q,
         order_by=order_by,
-        limit=limit,
         filters={
             "court": court,
             "case_name": case_name,
@@ -304,9 +282,6 @@ async def audio(
             description="Sort by 'score desc', 'dateArgued desc', or 'dateArgued asc'"
         ),
     ] = "score desc",
-    limit: Annotated[
-        int, Field(description="Maximum results to return", ge=1, le=100)
-    ] = 20,
 ) -> dict[str, Any]:
     """Search oral argument audio recordings in CourtListener."""
     return await _search_courtlistener(
@@ -315,7 +290,6 @@ async def audio(
         search_type="oa",
         q=q,
         order_by=order_by,
-        limit=limit,
         filters={
             "court": court,
             "case_name": case_name,
@@ -349,9 +323,6 @@ async def people(
     order_by: Annotated[
         str, Field(description="Sort by 'score desc' or 'name asc'")
     ] = "score desc",
-    limit: Annotated[
-        int, Field(description="Maximum results to return", ge=1, le=100)
-    ] = 20,
 ) -> dict[str, Any]:
     """Search judges and legal professionals in the CourtListener database."""
     return await _search_courtlistener(
@@ -360,7 +331,6 @@ async def people(
         search_type="p",
         q=q,
         order_by=order_by,
-        limit=limit,
         filters={
             "name": name,
             "position_type": position_type,
