@@ -58,9 +58,9 @@ async def _search_courtlistener(
         "type": search_type,
     }
 
-    # Add limit (V4 uses 'hit' instead of 'limit')
+    # Add limit (V4 uses 'page_size' for pagination)
     if limit:
-        params["hit"] = limit
+        params["page_size"] = limit
 
     # Add optional filters (only non-empty/non-zero values)
     for key, value in filters.items():
